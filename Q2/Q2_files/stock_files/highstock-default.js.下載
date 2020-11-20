@@ -1,0 +1,200 @@
+/* 
+ * ----------------------------------------
+ * HighCharts 基本預設
+ * ======================================== 
+ */
+
+
+// 字級
+var _setFontSizeB = '1.125rem';
+var _setFontSizeL = '1rem';
+var _setFontSizeM = '.9375rem';
+var _setFontSize = '.875rem';
+var _setFontSizeS = '.75rem';
+var _setFontSizeX = '.6875rem';
+var _setFontFamily = 'inherit';
+
+// 顏色
+var _clrRed = "#ee3333";
+var _clrGreen = '#2eba07';
+var _clrBlue = '#4286F5';
+var _clrYellow = '#FEBD09';
+var _clrPink = '#E65596';
+var _clrGreenLight = '#83BF0A';
+var _clrPurple = '#834BEB';
+var _clrOrange = '#FC7742';
+var _clrGrayLight = '#bbbbbb';
+
+var _crosshairColor = "#333333";
+
+// 全域設置
+Highcharts.setOptions({
+    lang: {
+        shortMonths: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
+        thousandsSep: '',
+        rangeSelectorZoom: '',
+        numericSymbols: null        
+    },    
+    chart: {
+        backgroundColor:'',        
+        style: {
+            fontFamily: _setFontFamily
+        }
+    },
+    credits: {
+        enabled: false,
+        href: '/',
+        position: {
+            align: 'right',
+            verticalAlign: 'top',
+            x: -12,
+            y: 24
+        },
+        style: {
+            fontSize: _setFontSize,
+        },
+        text: '' //© 玩股網
+    },
+    loading: {
+        labelStyle: {
+            fontWeight: 400
+        },
+        style: {
+            opacity: 1,
+            backgroundColor: 'rgba(255,255,255,.7)'
+        }
+    },
+    legend: {
+        padding: 0,
+        margin: 20,
+        itemStyle: {
+            fontSize: _setFontSizeS,
+            fontWeight: 'normal',
+            cursor: 'default'
+        },
+        useHTML: true
+    },
+    title: {
+        text: '',
+        style: {
+            fontSize: _setFontSizeL
+        }
+    },
+    rangeSelector: {
+        enabled: false,
+        inputEnabled: false,
+        floating: true,
+        y: -75,
+        x: -6,
+        buttonTheme: {
+            fill: 'rgba(200, 210, 215, 0.2)',
+            padding: 6,
+            width: 52,
+            style: {
+                fontFamily: _setFontFamily
+            },
+            states: {
+                select: {
+                    fill: 'rgba(200, 210, 215, 0.6)',
+                    style: {                        
+                        fontWeight: 'normal'
+                    }
+                }
+            }
+        }
+    },
+    navigator: {
+        enabled: false,
+        maskFill: 'rgba(134, 156, 167, 0.15)',
+        maskInside: false,
+        series: {
+            color: '#869CA7'
+        },
+        xAxis: {
+            labels: {
+                formatter: function() {
+                    return Highcharts.dateFormat('%m/%d', this.value);
+                }
+            }
+        }
+    },
+    scrollbar: {
+        enabled: false
+    },
+    plotOptions: {
+        series: {
+            dataGrouping: {
+                enabled: false
+            },
+            events: {
+                legendItemClick: function() {
+                    return false;
+                }
+            },
+            states: {
+                hover: {
+                    enabled: false
+                },
+                inactive: {
+                    opacity: 1
+                }
+            }
+        },
+        area: {
+            lineWidth: 1.5,
+            fillOpacity: 0.1
+        }
+    },
+    tooltip: {
+        enabled: false,
+        shared: true,
+        split: false,
+        backgroundColor: '#ffffff',
+        borderWidth: 0,
+        useHTML: true,
+        padding: 16,
+        headerFormat: '<span>{point.key}</span><br/>',
+        pointFormat: '<span style="color:{point.color}">\u25CF</span> {series.name}：{point.y}<br/>',
+        style: {
+            lineHeight: 1.5
+        }
+    },
+    xAxis: {
+        tickLength: 4,
+        tickColor: '#dddddd',
+        lineColor: '#dddddd',
+        gridLineColor: 'rgba(0,0,0,.05)', //#f2f2f2
+        labels: {
+            style: {
+                fontSize: _setFontSizeX
+            }
+        },
+        title: {
+            text: ''
+        }
+    },
+    yAxis: {
+        lineColor: '#dddddd',
+        gridLineColor: 'rgba(0,0,0,.05)', //#f2f2f2
+        showLastLabel: true,
+        labels: {
+            align: 'left',
+            x: 8,
+            y: 4,
+            style: {
+                fontSize: _setFontSizeX
+            }
+        },
+        title: {
+            text: '',
+            rotation: 0,
+            reserveSpace: false,
+            align: 'high',
+            useHTML: true,
+            style: {
+                fontSize: _setFontSize
+            },
+            y: -12
+        }
+    }
+});

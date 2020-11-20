@@ -1,0 +1,398 @@
+// 技術分析圖
+
+$(function() { 
+    //Highcharts.Annotation.prototype.addClipPaths = function() {}; //標示溢出
+    Highcharts.Annotation.types.crookedLine.prototype.setClipAxes = function() {};
+    Highcharts.Annotation.types.infinityLine.prototype.setClipAxes = function() {};
+    Highcharts.Annotation.types.elliottWave.prototype.setClipAxes = function() {};
+    
+    Highcharts.setOptions({
+        lang: {
+            navigation: {
+                popup: {
+                    addButton: '添加',
+                    color: '顏色',
+                    fill: '填滿',
+                    fontSize: '字級',
+                    title: '標題',
+                    strokeWidth: '線寬',
+                    stroke: '線顏色',
+                    segment: '趨勢線',
+                    horizontalLine: '水平線',
+                    verticalLine: '垂直線',
+                    crooked3: '轉折線',
+                    elliott3: '艾略特校正波浪',
+                    elliott5: '艾略特三角波浪',
+                    circle: '圓形',
+                    rectangle: '矩形',
+                    verticalLabel: '垂直箭頭標示',
+                    flags: '插旗標示',
+                    label: '標示',
+                    style: '外觀樣式',
+                    saveButton: '儲存'
+                }
+            },
+            stockTools: {
+                gui: {
+                    segment: '趨勢線',
+                    horizontalLine: '水平線',
+                    verticalLine: '垂直線',
+                    crooked3: '轉折線',
+                    elliott3: '艾略特校正波浪',
+                    elliott5: '艾略特三角波浪',
+                    circle: '圓形',
+                    rectangle: '矩形',
+                    verticalLabel: '垂直箭頭標示',
+                    flagSquarepin: '插旗標示',
+                    label: '標示',
+                    toggleAnnotations: '顯示/隱藏'
+                }
+            }
+        }
+    });
+
+    var Chart = Highcharts.stockChart('TechnicalChart', {
+        stockTools: {
+            gui: {
+                enabled: true,
+                buttons: [ 'lines', 'crookedLines', 'simpleShapes', 'verticalLabels', 'toggleAnnotations'],
+                definitions: {
+                    lines: {
+                        items:['segment', 'horizontalLine']
+                    },
+                    crookedLines: {
+                        items: ['crooked3', 'elliott3', 'elliott5']
+                    },
+                    simpleShapes: {
+                        items: ['circle', 'rectangle']
+                    },
+                    verticalLabels: {
+                        items: ['verticalLabel']
+                    }
+                }
+            }
+        },
+        navigation: {
+            annotationsOptions: {
+                controlPointOptions:{
+                    style: {
+                        stroke: '#4286F5'
+                    }
+                },
+                labelOptions: {    
+                    borderWidth: 0,
+                    style: {
+                        fontSize: '12px',
+                        fontWeight: 600,                        
+                    },                    
+                }, 
+                typeOptions: {
+                    line: {
+                        strokeWidth: 2 
+                    }
+                },                
+                //形狀範圍預設重置
+                shapeOptions: {
+                    fill: 'rgba(66, 134, 245, 0)',
+                    strokeWidth: 2,
+                    stroke: '#4286F5'
+                }
+            }
+        },
+
+        chart: {
+            spacingTop: 80,
+            spacingLeft: 0,
+            panning: {
+                enabled: false
+            }
+        },
+        title: {
+            text: '台積電(2330)',
+            floating: true,
+            style: {
+                fontSize: '1.25rem',
+                fontWeight: '600',
+                color: '#555555'
+            },
+            y: 40
+        },
+        navigator: {
+            enabled: true,
+            margin: 9,
+            height: 36,
+            xAxis: {
+                overscroll: 60000
+            },
+            series: {
+                data: []
+            }
+        },
+        rangeSelector: {
+            enabled: true,
+            buttons: [{
+                type: 'month',
+                count: 3,
+                text: '3個月'
+            },{
+                type: 'month',
+                count: 6,
+                text: '6個月'  
+            },{
+                type: 'all',
+                text: '全部'
+            }],
+            selected: 0
+        },
+        plotOptions: {
+            line: {
+                lineWidth: 1.25
+            },
+            // candlestick: {
+            //     pointPadding: .15,
+            //     maxPointWidth: 5 // 最大K棒寬
+            // },
+            // column: {
+            //     pointPadding: .15,
+            //     maxPointWidth: 6
+            // },
+            scatter: {
+                marker: {
+                    radius: 3.5,
+                    symbol: 'circle'
+                }
+            },
+            flags: {                
+                lineWidth: 1.5
+            }
+        },
+        tooltip: {
+            enabled: true,
+            headerFormat: '',
+            pointFormat: '',
+            padding: 0
+        },
+        xAxis: {
+            type: "datetime",
+            width: "99%",
+            gridLineWidth: 1,
+            crosshair: {   
+                dashStyle: 'Dash',             
+                color: _crosshairColor,
+                label: {
+                    enabled: true,
+                    padding: 5,
+                    backgroundColor: '#5A6487',
+                    format: '{value: %Y/%m/%d}'
+                }
+            },
+            range: 6 * 30 * 24 * 3600 * 1000, // 顯示資料時間範圍
+            labels: {
+                formatter: function() {
+                    return Highcharts.dateFormat('%m/%d', this.value);
+                }
+            },
+            units: [[
+                'month',
+                [1]
+            ]]
+        },
+        yAxis: [{
+            height: 300,
+            margin: 20,
+            crosshair: {
+                dashStyle: 'Dash',   
+                color: _crosshairColor,
+                label: {
+                    enabled: true,
+                    padding: 5,
+                    backgroundColor: '#5A6487',
+                    format: '{value:.2f}'
+                }
+            },        
+            labels: {
+                format: '{value:.0f}',
+            }, 
+            tickAmount: 8,
+            title: {
+                text:'<ul class="nav nav-ma"><li class="nav-item">K線</li><li class="nav-item clr-blue hc-checkbox"><input class="fm-check-input" type="checkbox" name="ma" id="ma-1"><label class="hc-check-label" for="ma-1">MA<i parameter1>5</i><span data-char="↑">28042.43</span></label></li><li class="nav-item clr-yellow hc-checkbox"><input class="fm-check-input" type="checkbox" name="ma" id="ma-2"><label class="hc-check-label" for="ma-2">MA<i parameter2>10</i><span data-char="↓">28716.52</span></label></li><li class="nav-item clr-pink hc-checkbox"><input class="fm-check-input" type="checkbox" name="ma" id="ma-3"><label class="hc-check-label" for="ma-3">MA<i parameter3>20</i><span data-char="↑">28383.47</span></label></li><li class="nav-item clr-green-light hc-checkbox"><input class="fm-check-input" type="checkbox" name="ma" id="ma-4"><label class="hc-check-label" for="ma-4">MA<i parameter4>60</i><span data-char="↓">28649.73</span></label></li><li class="nav-item clr-purple hc-checkbox"><input class="fm-check-input" type="checkbox" name="ma" id="ma-5"><label class="hc-check-label" for="ma-5">MA<i parameter5>120</i><span data-char="↑">27472.18</span></label></li><li class="nav-item clr-orange hc-checkbox"><input class="fm-check-input" type="checkbox" name="ma" id="ma-6"><label class="hc-check-label" for="ma-6">MA<i parameter6>240</i><span data-char="↓">26842.48</span></label></li></ul>',
+                y: -25
+            },
+            // resize: {
+            //     enabled: true,
+            //     lineWidth: 2,
+            //     lineColor: '#cccccc'
+            // }
+        },{
+            top: 420,
+            height: 110,
+            crosshair: {
+                dashStyle: 'Dash',  
+                color: _crosshairColor,
+                label: {
+                    enabled: true,
+                    padding: 5,
+                    backgroundColor: '#5A6487',
+                    format: '{value:.2f}'
+                },
+                snap: false
+            },
+            offset: 0, 
+            title: {
+                text: '<ul class="nav nav-ma"><li class="nav-item">成交量</li><li class="nav-item clr-blue">MV5<span data-char="↑">298061</span></li><li class="nav-item clr-pink">MV20<span data-char="↓">277193</span></li><li class="nav-item">成交量<span data-char="↓">263534</span></li></ul>',
+                y: -25
+            }
+        },{
+            top: 570,
+            height: 110,
+            crosshair: {
+                dashStyle: 'Dash',  
+                color: _crosshairColor,
+                label: {
+                    enabled: true,
+                    padding: 5,
+                    backgroundColor: '#5A6487',
+					format: '{value:.2f}'
+                },
+                snap: false
+            }, 
+            offset: 0,
+            title: {
+                text: '<ul class="nav nav-ma"><li class="nav-item">KD</li><li class="nav-item clr-blue">K9<span data-char="↑">45.43</span></li><li class="nav-item clr-pink">D9<span data-char="↓">45.43</span></li><li class="nav-item">K值 > 80為紅點 K值 < 20為綠點</li></ul>',
+                y: -25
+            }
+        },{
+            top: 720,
+            height: 110,
+            crosshair: {
+                dashStyle: 'Dash',  
+                color: _crosshairColor,
+                label: {
+                    enabled: true,
+                    padding: 5,
+                    backgroundColor: '#5A6487',
+					format: '{value:.2f}'
+                },
+                snap: false
+            }, 
+            offset: 0,
+            title: {
+                text: '<ul class="nav nav-ma"><li class="nav-item">RSI</li><li class="nav-item clr-blue">RSI5<span data-char="↑">50.28</span></li><li class="nav-item clr-pink">RSI10<span data-char="↓">50.28</span></li></ul>',
+                y: -25
+            }
+        }],
+        series: [{
+            name: 'close',
+            data: Close_D,
+            color: 'rgba(0,0,0,0)'
+        },{
+            name: 'KBar',
+            type: 'candlestick',
+            data: candlestickData_D
+        },{
+            name: '均線扣抵',
+            type:'flags',
+            shape: 'circlepin',            
+            width: 14,
+            height: 14,              
+            // y: -21,    
+            enableMouseTracking: false,               
+            data:[{
+                // 月線扣抵
+                x: Deduct20MA_D,
+                title: '20',                              
+                color: _clrPink,
+                style: {
+                    color: _clrPink
+                }
+            },{
+                // 季線扣抵
+                x: Deduct60MA_D,
+                title: '60',                              
+                color: _clrGreenLight,
+                style: {
+                    color: _clrGreenLight
+                }
+            }]
+        },{
+            name: 'MA5',
+            data: Mean5_D,
+            color: _clrBlue,
+            enableMouseTracking: false
+        },{
+            name: 'MA10',
+            data: Mean10_D,
+            color: _clrYellow,
+            enableMouseTracking: false
+        },{
+            name: 'MA20',
+            data: Mean20_D,
+            color: _clrPink,
+            enableMouseTracking: false
+        },{
+            name: 'MA60',
+            data: Mean60_D,
+            color: _clrGreenLight,
+            enableMouseTracking: false
+        },{
+            name: 'MA120',
+            data: Mean120_D,
+            color: _clrPurple,
+            enableMouseTracking: false
+        },{
+            name: 'MA240',
+            data: Mean240_D,
+            color: _clrOrange,
+            enableMouseTracking: false
+        },{
+            name: '成交量',
+            data: Volume_D,
+            type: 'column',
+            yAxis: 1
+        },{
+            name: '均量5',
+            data: Mean5Volume_D,
+            yAxis: 1,
+            color: _clrBlue
+        },{
+            name: '均量20',
+            data: Mean20Volume_D,
+            yAxis: 1,
+            color: _clrPink
+        },{
+            name: 'K9',
+            data: K9_D,
+            yAxis: 2,
+            color: _clrBlue
+        },{
+            name: 'D9',
+            data: D9_D,
+            yAxis: 2,
+            color: _clrPink
+        },{
+            name: '',
+            data: K9_D_Scatter_Red,
+            type: 'scatter',
+            yAxis: 2,
+            color: '#ee3333'
+        },{
+            name: '',
+            data: K9_D_Scatter_Green,
+            type: 'scatter',
+            yAxis: 2,
+            color: '#2eba07'
+        },{
+            name: 'RSI5',
+            data: RSI5_D,
+            yAxis: 3,
+            color: _clrBlue
+        },{
+            name: 'RSI10',
+            data: RSI10_D,
+            yAxis: 3,
+            color: _clrPink
+        }]
+    });
+
+    //Chart.showLoading('<div class="loader-mask"><div class="loader-cir"><hr/><hr/><hr/><hr/></div><span class="loader-tips">載入中..</span></div>');
+});
